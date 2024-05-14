@@ -1,0 +1,44 @@
+
+.header {
+  padding: 10px;
+  position: relative;
+
+  .header-main {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+
+    .notification {
+      position: relative;
+      padding: 5px;
+      cursor: pointer;
+
+      .notification-icon {
+        margin: 0 15px;
+      }
+
+      .items {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(-50%, -50%);
+        border: 1px solid #666;
+        border-radius: 50%;
+        width: 15px;
+        height: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+      }
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 100%;
+      margin-left: 15px;
+      object-fit: cover;
+    }
+  }
+}
