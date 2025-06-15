@@ -40,7 +40,7 @@ a:focus {
   top: 0;
   width: 250px;
   text-align: center;
-  padding: 20px 0;
+  height: 57px;
 }
 .sidebar-brand h2 {
   margin: 0;
@@ -113,6 +113,18 @@ a:focus {
   position: absolute;
   margin-right: -250px;
 }
+.faTimes{
+      display: none;
+    }
+  #wrapper.toggled {
+
+    .faBar{
+      display: none;
+    }
+    .faTimes{
+      display: block;
+    }
+  }
 
 @media (min-width: 992px) {
   #wrapper {
@@ -121,6 +133,7 @@ a:focus {
   
   #wrapper.toggled {
     padding-left: 60px;
+    
   }
 
   #sidebar-wrapper {

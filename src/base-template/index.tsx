@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Header from "../components/header";
 import SideBar from "../components/sidebar";
 import Login from "../pages/login";
@@ -8,9 +7,7 @@ function BaseTemplate() {
   const user = localStorage.getItem("user");
   const handleClick = () => {
     const wrapper: any = document.querySelector('#wrapper');
-
     wrapper.classList.toggle('toggled');
-
   }
 
   return (
