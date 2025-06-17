@@ -44,12 +44,3 @@ export const genderEnToBn = (gender: string): string => {
   }
 };
 
-export const fetchBase64Image = async (imageUrl: string): Promise<string> => {
-  const response = await fetch(imageUrl);
-  const blob = await response.blob();
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.readAsDataURL(blob);
-  });
-};

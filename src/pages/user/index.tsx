@@ -18,7 +18,7 @@ import { debounce } from "../../helper/debounce";
 import Pagination from "../../components/Pagenate";
 import Dropdown from "react-dropdown";
 import { generatePDF } from "../../helper/generatePdf";
-import { generatePdfContent } from "./utils";
+import { columns, generateExcel, generatePdfContent, getRandomMod13 } from "./utils";
 
 export const downloadReportOption = [
   {
@@ -54,6 +54,7 @@ const User = () => {
   const totalItems = 225;
   const totalPages = Math.ceil(totalItems / pageSize);
   console.log("userData", userData);
+
   useEffect(() => {
     getEmployeeList();
   }, [pageSize, currentPage]);
@@ -62,10 +63,10 @@ const User = () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://fakerapi.it/api/v2/persons?_quantity=${pageSize}&_page=3`
+        `https://fakerapi.it/api/v2/persons?_quantity=${pageSize}&_page=${currentPage}`
       );
-      setUserData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
-      setMainData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
+      setUserData(response?.data?.data);
+      setMainData(response?.data?.data);
       setRespMeta({ ...respMeta, totalRecords: response?.data?.data?.length });
       setIsLoading(false);
     } catch (error: any) {
@@ -76,6 +77,8 @@ const User = () => {
       setIsLoading(false);
     }
   };
+
+
 
   const handleDelete = async (id: any) => {
     try {
@@ -94,8 +97,9 @@ const User = () => {
     setIsLoading(true);
     setSearchKey(text);
     let temp = [...mainData];
+    console.log('temp',temp,text)
     temp = temp?.filter((item: any) =>
-      item?.employee_name?.toLowerCase().includes(text.toLowerCase())
+      item?.firstname?.toLowerCase().includes(text.toLowerCase())||item?.lastname?.toLowerCase().includes(text.toLowerCase())
     );
     setUserData(temp);
     setIsLoading(false);
@@ -134,7 +138,7 @@ const User = () => {
       generatePDF( await generatePdfContent(userData));
       console.log("pdf ----", userData);
     } else if (option?.value === "excel") {
-      console.log("excel---", userData);
+      generateExcel(userData,columns)
     } else toast.error("Something went wrong");
   };
 
@@ -197,7 +201,16 @@ const User = () => {
           <table className="table__ ">
             <thead className="">
               <tr>
-                <th className="text-center" scope="col">
+                {/* {
+                  columns?.map((item,i)=>{
+                    return(<th className={item.align} scope="col" key={i}>
+                  {item?.text}
+                </th>)
+                  })
+                
+
+                } */}
+                <th className="text-left" scope="col">
                   #
                 </th>
                 <th className="text-left" scope="col">
@@ -233,7 +246,7 @@ const User = () => {
                             width={55}
                             height={55}
                             src={`https://reqres.in/img/faces/${
-                              index + 1
+                              getRandomMod13()
                             }-image.jpg`}
                             alt={row.firstname}
                           />

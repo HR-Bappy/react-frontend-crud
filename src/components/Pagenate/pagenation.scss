@@ -1,0 +1,11 @@
+.page-item {
+  button {
+    color: var(--primary-color) !important;
+  }
+}
+.page-item.active {
+  button {
+    color: #fff !important;
+    background-color: var(--primary-color) !important;
+  }
+}
