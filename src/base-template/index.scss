@@ -73,7 +73,7 @@ a:focus {
 .sidebar-nav > li.active > a {
   text-decoration: none;
   color: #fff;
-  background: #F8BE12;
+  background: var(--primary-color);
 }
 .sidebar-nav > li > a .site_bar_icon {
   font-size: 18px;
@@ -100,7 +100,7 @@ a:focus {
   color: #757575;
 }
 #navbar-wrapper .navbar a:hover {
-  color: #F8BE12;
+  color: var(--primary-color);
 }
 
 #content-wrapper {

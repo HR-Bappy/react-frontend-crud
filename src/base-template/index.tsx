@@ -2,6 +2,7 @@ import Header from "../components/header";
 import SideBar from "../components/sidebar";
 import Login from "../pages/login";
 import "./index.scss";
+import "./common.scss"
 import PageRoutes from "../pages";
 function BaseTemplate() {
   const user = localStorage.getItem("user");

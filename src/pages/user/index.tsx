@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
 import "./user.scss";
-import { FaSearch, FaTimes } from "react-icons/fa";
+import {
+  FaRegFileExcel,
+  FaRegFilePdf,
+  FaSearch,
+  FaTimes,
+} from "react-icons/fa";
 import { defaultData, sortList } from "../../data/user";
 import { MdEdit, MdOutlineDelete } from "react-icons/md";
 import { useCallback, useEffect, useState } from "react";
@@ -10,7 +15,29 @@ import axios from "axios";
 import Select from "../../components/select";
 import ContentLoader from "../../components/ContentLoader";
 import { debounce } from "../../helper/debounce";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/Pagenate";
+import Dropdown from "react-dropdown";
+import { generatePDF } from "../../helper/generatePdf";
+import { generatePdfContent } from "./utils";
+
+export const downloadReportOption = [
+  {
+    value: "pdf",
+    label: (
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <FaRegFilePdf color="red" fontSize={18} /> <span>পিডিএফ</span>
+      </div>
+    ),
+  },
+  {
+    value: "excel",
+    label: (
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <FaRegFileExcel color="green" fontSize={18} /> <span>এক্সেল</span>
+      </div>
+    ),
+  },
+];
 const initMeta: any = {
   page: 0,
   limit: 10,
@@ -22,21 +49,25 @@ const User = () => {
   const [searchKey, setSearchKey] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [respMeta, setRespMeta] = useState<any>(initMeta);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const totalItems = 225;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  console.log("userData", userData);
   useEffect(() => {
     getEmployeeList();
-  }, []);
+  }, [pageSize, currentPage]);
 
   const getEmployeeList = async () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://dummy.restapiexample.com/api/v1/employees`
+        `https://fakerapi.it/api/v2/persons?_quantity=${pageSize}&_page=3`
       );
       setUserData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
 
       setMainData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
-      setRespMeta({ ...respMeta, totalRecords:response?.data?.data?.length });
+      setRespMeta({ ...respMeta, totalRecords: response?.data?.data?.length });
       setIsLoading(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -92,9 +123,6 @@ const User = () => {
       setUserData(temp);
     }
   };
-  const onPageChanged = (metaParams: any) => {
-    console.log("metaParams", metaParams);
-  };
 
   const removeSearch = () => {
     setSearchKey("");
@@ -102,19 +130,31 @@ const User = () => {
     const div: any = document.getElementById("searchbox");
     if (div) div.value = "";
   };
+
+  const handleDownloadReport = async(option: any) => {
+    if (option?.value === "pdf") {
+      // generateUserPdfWithJsPDF(userData)
+      const docDefinition = await generatePdfContent(userData);
+      generatePDF( docDefinition);
+      console.log("pdf ----", userData);
+    } else if (option?.value === "excel") {
+      console.log("excel---", userData);
+    } else toast.error("Something went wrong");
+  };
+
   return (
     <div className="user-page">
       <div className="container-fluid">
         <div className="row mb-3">
           <div className="page-header d-flex justify-content-between align-items-center">
             <h2>Employee List</h2>
-            <Link className="btn btn-outline-primary" to={"/employee/add"}>
+            <Link className="btn btn_outline_primary" to={"/employee/add"}>
               Add
             </Link>
           </div>
         </div>
         <div className="row filter-section">
-          <div className="col-md-4 col-sm-6 search-container">
+          <div className="col-md-3 col-sm-6 search-container">
             <input
               onChange={(e: any) => debouncedSearch(e.target.value)}
               type="text"
@@ -130,7 +170,7 @@ const User = () => {
               )}
             </div>
           </div>
-          <div className="col-md-6 col-sm-6 filter">
+          <div className="col-md-2 col-sm-6 filter">
             <div className="d-flex align-items-center">
               <p className="mb-0 me-2">Sort by</p>
               <Select
@@ -145,27 +185,34 @@ const User = () => {
               />
             </div>
           </div>
+          <div className="col d-flex justify-content-end">
+            <div style={{ width: "200px" }}>
+              <Dropdown
+                className="w-100"
+                options={downloadReportOption}
+                onChange={handleDownloadReport}
+                placeholder="Download Report"
+              />
+            </div>
+          </div>
         </div>
+
         <div className="row pt-5">
-          <table className="table table-bordered">
-            <thead className="thead-dark">
+          <table className="table__ ">
+            <thead className="">
               <tr>
                 <th className="text-center" scope="col">
                   #
                 </th>
-                <th className="text-center" scope="col">
-                  Name
+                <th className="text-left" scope="col">
+                  Profile
                 </th>
-                <th className="text-center" scope="col">
-                  Salary
-                </th>
-                <th className="text-center" scope="col">
-                  Age
-                </th>
-                <th className="text-center" scope="col">
-                  Image
-                </th>
-                <th className="text-center" scope="col">
+                <th scope="col">Gender</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Email</th>
+                <th scope="col">Website Link</th>
+                <th scope="col">Address</th>
+                <th className="text-end" scope="col">
                   Action
                 </th>
               </tr>
@@ -184,22 +231,38 @@ const User = () => {
                       <th className="text-center" scope="row">
                         {index + 1}
                       </th>
-                      <td>{row?.employee_name}</td>
-                      <td>{row?.employee_salary}</td>
-                      <td>{row?.employee_age}</td>
-                      <td className="d-flex justify-content-center">
-                        <div className="table-image">
+                      <td className="text-left">
+                        <div className="w-100 d-flex ">
                           <img
-                            src={
-                              row?.profile_image == ""
-                                ? "https://img.freepik.com/premium-vector/young-smiling-man-avatar-man-with-brown-beard-mustache-hair-wearing-yellow-sweater-sweatshirt-3d-vector-people-character-illustration-cartoon-minimal-style_365941-860.jpg"
-                                : row?.profile_image
-                            }
+                            width={55}
+                            height={55}
+                            src={`https://reqres.in/img/faces/${
+                              index + 1
+                            }-image.jpg`}
+                            alt={row.firstname}
                           />
+                          <div className="ms-2">
+                            <span className="fw-bold">
+                              {row?.firstname + " " + row?.lastname}
+                            </span>
+                            <br />
+                            <span>{row?.birthday}</span>
+                          </div>
                         </div>
                       </td>
-
+                      <td>{row?.gender}</td>
+                      <td>{row?.phone}</td>
+                      <td>{row?.email}</td>
+                      <td>{row?.website}</td>
                       <td>
+                        {row?.address?.street +
+                          ", " +
+                          row?.address?.city +
+                          ", " +
+                          row?.address?.country}
+                      </td>
+
+                      <td className="text-end">
                         <Link
                           onClick={() => LocalStorageService.set("edit", row)}
                           to={"/employee/" + row.id}
@@ -223,11 +286,15 @@ const User = () => {
             )}
           </table>
 
-          <Pagination
-            meta={respMeta}
-            pageNeighbours={2}
-            onPageChanged={onPageChanged}
-          />
+          <div className="mt-2">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              pageSize={pageSize}
+              onPageSizeChange={setPageSize}
+            />
+          </div>
         </div>
       </div>
     </div>
