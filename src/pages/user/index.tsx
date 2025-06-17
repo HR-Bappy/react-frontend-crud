@@ -65,7 +65,6 @@ const User = () => {
         `https://fakerapi.it/api/v2/persons?_quantity=${pageSize}&_page=3`
       );
       setUserData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
-
       setMainData(response?.data?.data?.slice(respMeta.page, respMeta?.limit));
       setRespMeta({ ...respMeta, totalRecords: response?.data?.data?.length });
       setIsLoading(false);
@@ -105,7 +104,6 @@ const User = () => {
   const debouncedSearch = useCallback(debounce(handleSearch, 400), []);
 
   const handleSort = (value: any) => {
-    console.log("value", value);
     if (value == 0) {
       getEmployeeList();
       return;
@@ -133,9 +131,7 @@ const User = () => {
 
   const handleDownloadReport = async(option: any) => {
     if (option?.value === "pdf") {
-      // generateUserPdfWithJsPDF(userData)
-      const docDefinition = await generatePdfContent(userData);
-      generatePDF( docDefinition);
+      generatePDF( await generatePdfContent(userData));
       console.log("pdf ----", userData);
     } else if (option?.value === "excel") {
       console.log("excel---", userData);
