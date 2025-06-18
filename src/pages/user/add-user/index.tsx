@@ -1,58 +1,61 @@
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import Select from "../../../components/select";
-import './add-user.scss'
-import { LocalStorageService } from "../../../services/localStorage.service";
+import "./add-user.scss";
 import { useNavigate } from "react-router-dom";
-import { roleList } from "../../../data/user";
 import AddEditForm from "../add-edit-form";
 import axios from "axios";
+import { API_BASE_URL } from "../../../helper/constant";
 function Login() {
-    const navigate = useNavigate()
-    const defalutValue = {
-        employee_name: '',
-        employee_salary: '',
-        employee_age: '',
-        profile_image: ''
+  const navigate = useNavigate();
+  const defalutValue = {
+    employee_name: "",
+    employee_salary: "",
+    employee_age: "",
+    profile_image: "",
+  };
+  const {
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data: any) => {
+    console.log("data", data);
+    try {
+      const response = await axios.post(API_BASE_URL + "product/create", data);
+      console.log("response", response.status);
+      navigate("/employee");
+    } catch (error) {
+      console.log(error);
     }
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
 
-    const onSubmit = async (data: any) => {
-        try {
-            let formData: any = new FormData();
+    // return;
+    // try {
+    //   let formData: any = new FormData();
 
-            formData.append("employee_name", data?.employee_name);
-            formData.append("employee_age", data?.employee_age);
-            formData.append("employee_salary", data?.employee_salary);
-            formData.append("profile_image", data?.profile_image);
-            const response = await axios.post(
-                `https://dummy.restapiexample.com/api/v1/create`, formData
-            );
-            // tempData=tempData?.concat(data);
-            // LocalStorageService.set('users', tempData)
-            // // 
-            toast.success('User Created')
-            navigate('/employee')
-            console.log('data', data)
-            // window.location.reload();
+    //   formData.append("employee_name", data?.employee_name);
+    //   formData.append("employee_age", data?.employee_age);
+    //   formData.append("employee_salary", data?.employee_salary);
+    //   formData.append("profile_image", data?.profile_image);
+    //   const response = await axios.post(
+    //     `https://dummy.restapiexample.com/api/v1/create`,
+    //     formData
+    //   );
+    //   toast.success("User Created");
+    //   navigate("/employee");
+    //   console.log("data", data);
+    // } catch (error) {}
+  };
 
-
-        } catch (error) {
-        }
-    };
-
-    return (
-        <div className="user-add-page">
-            <div className="container-fluid">
-                <AddEditForm onSubmit={onSubmit} title='Add Employee' defaultValue={defalutValue} />
-            </div>
-        </div>
-    );
+  return (
+    <div className="user-add-page">
+      <div className="container-fluid">
+        <AddEditForm
+          onSubmit={onSubmit}
+          title="Add Employee"
+          defaultValue={defalutValue}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default Login;

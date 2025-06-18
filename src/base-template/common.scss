@@ -42,11 +42,14 @@ table,
   border-radius: 5px 5px 0 0;
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  thead tr {
+  thead tr,thead tr th {
     background-color: #009879 !important;
     color: #ffffff;
     text-align: left;
     font-weight: bold;
+  }
+  thead tr th{
+    padding: 1.2rem .5rem !important;
   }
   th,
   td {

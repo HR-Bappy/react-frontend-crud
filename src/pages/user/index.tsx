@@ -6,7 +6,7 @@ import {
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
-import { defaultData, sortList } from "../../data/user";
+import { categoryOption, defaultData, sortList } from "../../data/user";
 import { MdEdit, MdOutlineDelete } from "react-icons/md";
 import { useCallback, useEffect, useState } from "react";
 import { LocalStorageService } from "../../services/localStorage.service";
@@ -18,7 +18,13 @@ import { debounce } from "../../helper/debounce";
 import Pagination from "../../components/Pagenate";
 import Dropdown from "react-dropdown";
 import { generatePDF } from "../../helper/generatePdf";
-import { columns, generateExcel, generatePdfContent, getRandomMod13 } from "./utils";
+import {
+  columns,
+  generateExcel,
+  generatePdfContent,
+  getRandomMod13,
+} from "./utils";
+import { API_BASE_URL } from "../../helper/constant";
 
 export const downloadReportOption = [
   {
@@ -48,37 +54,50 @@ const User = () => {
   const [mainData, setMainData] = useState<any>([]);
   const [searchKey, setSearchKey] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [respMeta, setRespMeta] = useState<any>(initMeta);
+  const [category, setCategory] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const totalItems = 225;
-  const totalPages = Math.ceil(totalItems / pageSize);
-  console.log("userData", userData);
+  const [totalItems,setTotaItems] = useState<number>(1);
+  // const totalPages = Math.ceil(totalItems / pageSize);
+  console.log("userData", category);
 
   useEffect(() => {
     getEmployeeList();
-  }, [pageSize, currentPage]);
+  }, [pageSize, currentPage, searchKey,category]);
 
   const getEmployeeList = async () => {
+    const payload = {
+      meta: {
+        page: currentPage-1,
+        limit: pageSize,
+      },
+      body: {
+        category: category,
+        searchKey: searchKey,
+        // fromDate: "2025-03-10",
+        // toDate: "2025-03-17",
+      },
+    };
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `https://fakerapi.it/api/v2/persons?_quantity=${pageSize}&_page=${currentPage}`
+      const response: any = await axios.post(
+        API_BASE_URL + `product/get-list`,
+        payload
       );
-      setUserData(response?.data?.data);
-      setMainData(response?.data?.data);
-      setRespMeta({ ...respMeta, totalRecords: response?.data?.data?.length });
+      console.log("respppp", response);
+      setUserData(response?.data?.body);
+      setMainData(response?.data?.body);
+      // setRespMeta({ ...respMeta, totalRecords: response?.data?.data?.length });
+      setTotaItems(response?.data?.meta?.totalRecords)
       setIsLoading(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
-      setUserData([...defaultData]);
-      setMainData([...defaultData]);
-      setRespMeta({ ...respMeta, totalRecords: defaultData?.length });
+      // setUserData([...defaultData]);
+      // setMainData([...defaultData]);
+      // setRespMeta({ ...respMeta, totalRecords: defaultData?.length });
       setIsLoading(false);
     }
   };
-
-
 
   const handleDelete = async (id: any) => {
     try {
@@ -96,13 +115,15 @@ const User = () => {
   const handleSearch = (text: any) => {
     setIsLoading(true);
     setSearchKey(text);
-    let temp = [...mainData];
-    console.log('temp',temp,text)
-    temp = temp?.filter((item: any) =>
-      item?.firstname?.toLowerCase().includes(text.toLowerCase())||item?.lastname?.toLowerCase().includes(text.toLowerCase())
-    );
-    setUserData(temp);
-    setIsLoading(false);
+    // let temp = [...mainData];
+    // console.log("temp", temp, text);
+    // temp = temp?.filter(
+    //   (item: any) =>
+    //     item?.firstname?.toLowerCase().includes(text.toLowerCase()) ||
+    //     item?.lastname?.toLowerCase().includes(text.toLowerCase())
+    // );
+    // setUserData(temp);
+    // setIsLoading(false);
   };
 
   const debouncedSearch = useCallback(debounce(handleSearch, 400), []);
@@ -115,12 +136,12 @@ const User = () => {
     let temp = [...userData];
     if (value == 1) {
       temp.sort(function (a, b) {
-        return parseFloat(a.employee_age) - parseFloat(b.employee_age);
+        return parseFloat(a.price) - parseFloat(b.price);
       });
       setUserData(temp);
     } else if (value == 2) {
       temp.sort(function (a, b) {
-        return parseFloat(b.employee_age) - parseFloat(a.employee_age);
+        return parseFloat(b.price) - parseFloat(a.price);
       });
       setUserData(temp);
     }
@@ -133,12 +154,12 @@ const User = () => {
     if (div) div.value = "";
   };
 
-  const handleDownloadReport = async(option: any) => {
+  const handleDownloadReport = async (option: any) => {
     if (option?.value === "pdf") {
-      generatePDF( await generatePdfContent(userData));
+      generatePDF(await generatePdfContent(userData));
       console.log("pdf ----", userData);
     } else if (option?.value === "excel") {
-      generateExcel(userData,columns)
+      generateExcel(userData, columns);
     } else toast.error("Something went wrong");
   };
 
@@ -170,7 +191,7 @@ const User = () => {
               )}
             </div>
           </div>
-          <div className="col-md-2 col-sm-6 filter">
+          <div className="col-md-3 col-sm-6 filter">
             <div className="d-flex align-items-center">
               <p className="mb-0 me-2">Sort by</p>
               <Select
@@ -181,6 +202,20 @@ const User = () => {
                 registerProperty={{
                   onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                     handleSort(e.target.value),
+                }}
+              />
+            </div>
+          </div>
+          <div className="col-md-3 col-sm-6 filter">
+            <div className="d-flex align-items-center">
+              <Select
+                isRequired
+                valuesKey="value"
+                textKey="name"
+                options={categoryOption}
+                registerProperty={{
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCategory(e.target.value),
                 }}
               />
             </div>
@@ -198,8 +233,8 @@ const User = () => {
         </div>
 
         <div className="row pt-5">
-          <table className="table__ ">
-            <thead className="">
+          <table className="table  table__ ">
+            <thead>
               <tr>
                 {/* {
                   columns?.map((item,i)=>{
@@ -214,13 +249,12 @@ const User = () => {
                   #
                 </th>
                 <th className="text-left" scope="col">
-                  Profile
+                  Product Name
                 </th>
-                <th scope="col">Gender</th>
-                <th scope="col">Phone</th>
-                <th scope="col">Email</th>
-                <th scope="col">Website Link</th>
-                <th scope="col">Address</th>
+                <th scope="col">Description</th>
+                <th scope="col">Category</th>
+                <th scope="col">Price</th>
+                <th scope="col">Taxable</th>
                 <th className="text-end" scope="col">
                   Action
                 </th>
@@ -240,14 +274,12 @@ const User = () => {
                       <th className="text-center" scope="row">
                         {index + 1}
                       </th>
-                      <td className="text-left">
+                      {/* <td className="text-left">
                         <div className="w-100 d-flex ">
                           <img
                             width={55}
                             height={55}
-                            src={`https://reqres.in/img/faces/${
-                              getRandomMod13()
-                            }-image.jpg`}
+                            src={`https://reqres.in/img/faces/${getRandomMod13()}-image.jpg`}
                             alt={row.firstname}
                           />
                           <div className="ms-2">
@@ -258,18 +290,19 @@ const User = () => {
                             <span>{row?.birthday}</span>
                           </div>
                         </div>
-                      </td>
-                      <td>{row?.gender}</td>
-                      <td>{row?.phone}</td>
-                      <td>{row?.email}</td>
-                      <td>{row?.website}</td>
-                      <td>
+                      </td> */}
+                      <td className="fw-bold">{row?.name}</td>
+                      <td>{row?.description}</td>
+                      <td>{row?.category}</td>
+                      <td>{row?.price}</td>
+                      <td>{row?.isTaxable}</td>
+                      {/* <td>
                         {row?.address?.street +
                           ", " +
                           row?.address?.city +
                           ", " +
                           row?.address?.country}
-                      </td>
+                      </td> */}
 
                       <td className="text-end">
                         <Link
@@ -298,7 +331,7 @@ const User = () => {
           <div className="mt-2">
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
+              totalPages={Math.ceil(totalItems / pageSize)}
               onPageChange={setCurrentPage}
               pageSize={pageSize}
               onPageSizeChange={setPageSize}

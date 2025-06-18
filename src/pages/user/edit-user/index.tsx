@@ -1,83 +1,69 @@
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import Select from "../../../components/select";
-import './edit-user.scss'
+import "./edit-user.scss";
 import { LocalStorageService } from "../../../services/localStorage.service";
 import { useNavigate, useParams } from "react-router-dom";
-import { roleList, users } from "../../../data/user";
+import { users } from "../../../data/user";
 import AddEditForm from "../add-edit-form";
 import { useEffect, useState } from "react";
 import axios from "axios";
-function Login({ }) {
-    const { id } = useParams();
-    const userData = users
-    const navigate = useNavigate()
-    const [defalutValue, setDefaultValue] = useState<any>()
-    const [hasLoaded, setHasLoaded] = useState(false)
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
+import { API_BASE_URL } from "../../../helper/constant";
+function Login({}) {
+  const { id } = useParams();
+  const userData = users;
+  const navigate = useNavigate();
+  const [defalutValue, setDefaultValue] = useState<any>();
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const {
+    formState: { errors },
+  } = useForm();
 
-    useEffect(() => {
-        if(id)
-        getData(id)
-    }, [])
+  useEffect(() => {
+    if (id) getData(id);
+  }, []);
 
-   
-  const getData = async (id:any) => {
+  const getData = async (id: any) => {
     try {
       const response = await axios.get(
-        `https://dummy.restapiexample.com/api/v1/employee/${id}`
+        API_BASE_URL + `product/get-by-id/${id}`
       );
-      setDefaultValue(response?.data?.data)
-      console.log('responseee',response.data)
-      setHasLoaded(true)
-    } catch (error:any) {
+      setDefaultValue(response?.data?.body);
+      console.log("responseee", response);
+      setHasLoaded(true);
+    } catch (error: any) {
       toast.error(error.response.data.message);
-      setDefaultValue(LocalStorageService?.get('edit'))
-      setHasLoaded(true)
+      setDefaultValue(LocalStorageService?.get("edit"));
+      setHasLoaded(true);
     }
   };
-    
-  
+
   const onSubmit = async (data: any) => {
     try {
-        let formData: any = new FormData();
-        
-  formData.append("employee_name", data?.employee_name);
-  formData.append("employee_age", data?.employee_age);
-  formData.append("employee_salary", data?.employee_salary);
-  formData.append("profile_image", data?.profile_image);
-  const response = await axios.put(
-    `https://dummy.restapiexample.com/public/api/v1/update/${id}`,formData
-  );
-        // tempData=tempData?.concat(data);
-        // LocalStorageService.set('users', tempData)
-        // // 
-        toast.success('User Updated')
-        navigate('/employee')
-        // window.location.reload();
-
-
-    } catch (error:any) {
-        toast.error(error.response.data.message);
+      const response = await axios.post(API_BASE_URL + "product/create", {
+        ...data,
+        id: id,
+      });
+      toast.success("Product Updated Succesfully");
+      navigate("/employee");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
-};
+  };
 
-
-    return (
-        <div className="user-add-page">
-            {hasLoaded &&
-                <div className="container-fluid">
-                    <AddEditForm type='edit' onSubmit={onSubmit} title='Edit User' defaultValue={defalutValue} />
-                </div>
-            }
-
+  return (
+    <div className="user-add-page">
+      {hasLoaded && (
+        <div className="container-fluid">
+          <AddEditForm
+            type="edit"
+            onSubmit={onSubmit}
+            title="Edit User"
+            defaultValue={defalutValue}
+          />
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default Login;

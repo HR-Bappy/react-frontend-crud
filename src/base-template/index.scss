@@ -67,13 +67,14 @@ a:focus {
   color: #757575;
   font-weight: 600;
   font-size: 18px;
+  padding: 3px 0;
   margin: auto;
 }
 .sidebar-nav > li > a:hover,
 .sidebar-nav > li.active > a {
   text-decoration: none;
-  color: #fff;
-  background: var(--primary-color);
+  color: var(--primary-color);
+  background: #fff;
 }
 .sidebar-nav > li > a .site_bar_icon {
   font-size: 18px;

@@ -110,18 +110,40 @@ export const defaultData = [
 export const sortList = [
     {
       id: 0,
-      name: "Default",
+      name: "--select price--",
       value: 0,
     },
     {
       id: 1,
-      name: "low to high",
+      name: "price low to high",
       value: 1,
     },
     {
-      name: "high to low",
+      name: "price high to low",
       id: 2,
       value: 2,
     },
   ];
  
+  export const categoryOption = [
+    {
+      id: 0,
+      name: "--select category--",
+      value: '',
+    },
+    {
+      id: 1,
+      name: "Electronics",
+      value: 'electronics',
+    },
+    {
+      id: 2,
+      name: "Clothing",
+      value: 'clothing',
+    },
+    {
+      name: "Jewellery",
+      id: 3,
+      value: 'jewellery',
+    },
+  ]

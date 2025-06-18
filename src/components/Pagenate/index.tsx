@@ -1,4 +1,5 @@
 import React from "react";
+import './pagenation.scss'
 
 type PaginationProps = {
   currentPage: number;
@@ -19,7 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const generatePageNumbers = (): (number | "...")[] => {
     const pages: (number | "...")[] = [];
-
+console.log('totalPages',totalPages)
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
