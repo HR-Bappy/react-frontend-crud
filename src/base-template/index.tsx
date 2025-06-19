@@ -4,6 +4,7 @@ import Login from "../pages/login";
 import "./index.scss";
 import "./common.scss"
 import PageRoutes from "../pages";
+
 function BaseTemplate() {
   const user = localStorage.getItem("user");
   const handleClick = () => {
@@ -19,7 +20,6 @@ function BaseTemplate() {
           <Header handleClick={handleClick} />
           <section id="content-wrapper">
             <PageRoutes />
-
           </section>
         </div>
       ) : (
