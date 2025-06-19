@@ -30,7 +30,7 @@ export const generatePDF = (
   docDefinition: TDocumentDefinitions,
   options?: IOptions
 ) => {
-  const fileName = options?.fileName || `রিপোর্ট-${Today}.pdf`;
+  const fileName =`Product-report-${Today}.pdf`;
   const progressCallback = options?.progressCallback;
 
   const finalDefinition = {
@@ -41,33 +41,34 @@ export const generatePDF = (
   };
 
   const pdf = pdfMake.createPdf(finalDefinition);
-
-  switch (options?.action) {
-    case "print":
-      pdf.print({ progressCallback });
-      break;
-    case "download":
+      // pdf.print({ progressCallback });
       pdf.download(fileName, undefined, { progressCallback });
-      break;
-    case "data-url":
-      pdf.getDataUrl(
-        (res) => options?.getValue && options?.getValue(res),
-        { progressCallback }
-      );
-      break;
-    case "base64":
-      pdf.getBase64(
-        (res) => options?.getValue && options?.getValue(res),
-        { progressCallback }
-      );
-      break;
-    case "blob":
-      pdf.getBlob(
-        (res) => options?.getValue && options?.getValue(res),
-        { progressCallback }
-      );
-      break;
-    default:
-      pdf.open({ progressCallback });
-  }
+
+  // switch (options?.action) {
+  //   case "print":
+  //     break;
+  //   case "download":
+  //     pdf.download(fileName, undefined, { progressCallback });
+  //     break;
+  //   case "data-url":
+  //     pdf.getDataUrl(
+  //       (res) => options?.getValue && options?.getValue(res),
+  //       { progressCallback }
+  //     );
+  //     break;
+  //   case "base64":
+  //     pdf.getBase64(
+  //       (res) => options?.getValue && options?.getValue(res),
+  //       { progressCallback }
+  //     );
+  //     break;
+  //   case "blob":
+  //     pdf.getBlob(
+  //       (res) => options?.getValue && options?.getValue(res),
+  //       { progressCallback }
+  //     );
+  //     break;
+  //   default:
+  //     pdf.open({ progressCallback });
+  // }
 };

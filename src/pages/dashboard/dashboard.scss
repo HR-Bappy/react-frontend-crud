@@ -114,3 +114,11 @@
     margin: 0 10px;
   }
 }
+.card-front {
+  a {
+    transition: all 0.3s ease-in-out;
+    &:hover {
+      letter-spacing: 2px;
+    }
+  }
+}

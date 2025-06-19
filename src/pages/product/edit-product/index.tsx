@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import "./edit-user.scss";
+import "./edit-product.scss";
 import { LocalStorageService } from "../../../services/localStorage.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { users } from "../../../data/user";
@@ -28,7 +28,7 @@ function Login({}) {
         API_BASE_URL + `product/get-by-id/${id}`
       );
       setDefaultValue(response?.data?.body);
-      console.log("responseee", response);
+
       setHasLoaded(true);
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -45,6 +45,7 @@ function Login({}) {
       });
       toast.success("Product Updated Succesfully");
       navigate("/product");
+
     } catch (error: any) {
       toast.error(error.response.data.message);
     }

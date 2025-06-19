@@ -117,7 +117,6 @@ export const generateExcel = async (data: any[], columns: any[]) => {
     vertical: "middle",
     horizontal: "left",
   };
-  console.log("dddd", getColumnLetter(columns.length));
 
   // Merge Title Cells and Apply Style
   titleRows.forEach((row, index) => {

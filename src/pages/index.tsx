@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import User from "./user";
-import AddUser from "./user/add-user";
-import EditUser from "./user/edit-user";
+import User from "./product";
+import AddUser from "./product/add-product";
+import EditUser from "./product/edit-product";
 import Dashboard from "./dashboard";
 import ProfilePage from "./profile";
 

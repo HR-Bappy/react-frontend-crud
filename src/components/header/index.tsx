@@ -4,6 +4,7 @@ import "./index.scss";
 import { toast } from "react-toastify";
 import { FaBars, FaSignOutAlt, FaTimes, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { LocalStorageService } from "../../services/localStorage.service";
 const profileOption = [
   {
     id: 1,
@@ -26,8 +27,7 @@ function Header({ handleClick }: any) {
   const [show, setShow] = useState<boolean>(false);
   const logout = () => {
     toast.success("Logout Success");
-    localStorage.removeItem("user");
-    localStorage.removeItem("users");
+    LocalStorageService.clear()
     navigator('/')
     window.location.reload();
   };

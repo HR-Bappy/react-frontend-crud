@@ -76,9 +76,7 @@ const Select = ({
                     ? renderItem(option)
                     : option?.[textKey as string]}
 
-                  {console.log('first',renderItem
-                    ? renderItem(option)
-                    : option?.[textKey as string])}
+                  
                 </option>
               );
             })

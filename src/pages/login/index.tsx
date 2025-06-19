@@ -3,6 +3,7 @@ import "./index.scss";
 import { useForm } from "react-hook-form";
 import { users } from "../../data/user";
 import { LocalStorageService } from "../../services/localStorage.service";
+import { FaRegUser } from "react-icons/fa";
 
 function Login() {
   const userData = users;
@@ -24,11 +25,11 @@ function Login() {
           LocalStorageService.set("users", users);
           toast.success("Login Success");
           flag = true;
+          window.location.reload();
           break;
         }
       }
-      if (!flag) toast.error("Wrong user or pass");
-      window.location.reload();
+      if (!flag) toast.error("Invalid user!!!");
     } catch (error) {}
   };
 
@@ -42,14 +43,17 @@ function Login() {
                 className="card-body cardbody-color p-lg-5"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <div className="text-center">
-                    <h4>Login</h4>
-                  <img
+                <div className="d-flex flex-column align-items-center">
+                  <h2 className="mb-3 font-bold" style={{letterSpacing:'3px'}}>Login</h2>
+                  {/* <img
                     src="https://cdn.pixabay.com/photo/2016/03/31/19/56/avatar-1295397__340.png"
                     className="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
                     width="200px"
                     alt="profile"
-                  />
+                  /> */}
+                  <div className="login-icon">
+                  <FaRegUser size={100}color='#fff'/>
+                  </div>
                 </div>
 
                 <div className="mb-3">

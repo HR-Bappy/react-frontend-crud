@@ -21,6 +21,7 @@ function BaseTemplate() {
           <section id="content-wrapper">
             <PageRoutes />
           </section>
+          <div className="footer d-flex align-items-center justify-content-center"><p className="mb-0">Copyright © 2025 HR Bappy. All Rights Reserved.</p></div>
         </div>
       ) : (
         <Login />

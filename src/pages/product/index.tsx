@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
-import "./user.scss";
+import "./product.scss";
 import {
   FaRegFileExcel,
   FaRegFilePdf,
@@ -27,7 +27,7 @@ export const downloadReportOption = [
     value: "pdf",
     label: (
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <FaRegFilePdf color="red" fontSize={18} /> <span>পিডিএফ</span>
+        <FaRegFilePdf color="red" fontSize={18} /> <span>PDF</span>
       </div>
     ),
   },
@@ -35,7 +35,7 @@ export const downloadReportOption = [
     value: "excel",
     label: (
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <FaRegFileExcel color="green" fontSize={18} /> <span>এক্সেল</span>
+        <FaRegFileExcel color="green" fontSize={18} /> <span>Excel</span>
       </div>
     ),
   },
@@ -46,8 +46,7 @@ const User = () => {
   const [searchKey, setSearchKey] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [confirm, setConfirm] = useState<boolean>(false);
-
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get("category") ?? "";
   const [category, setCategory] = useState<string>(categoryParam);
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,8 +66,6 @@ const User = () => {
       body: {
         category: category,
         searchKey: searchKey,
-        // fromDate: "2025-03-10",
-        // toDate: "2025-03-17",
       },
     };
     setIsLoading(true);
@@ -94,10 +91,10 @@ const User = () => {
   const handleSearch = (text: any) => {
     setIsLoading(true);
     setSearchKey(text);
+    setCurrentPage(1);
   };
 
   const debouncedSearch = useCallback(debounce(handleSearch, 400), []);
-
   const handleSort = (value: any) => {
     if (value == 0) {
       getProductList();
@@ -133,8 +130,6 @@ const User = () => {
       body: {
         category: category,
         searchKey: searchKey,
-        // fromDate: "2025-03-10",
-        // toDate: "2025-03-17",
       },
     };
     try {
@@ -142,15 +137,13 @@ const User = () => {
         API_BASE_URL + `product/get-list`,
         payload
       );
-      console.log("response", response);
       if (option?.value === "pdf") {
         generatePDF(await generatePdfContent(response?.data?.body));
-        console.log("pdf ----", userData);
+        toast.success("PDF downloaded successfully");
       } else if (option?.value === "excel") {
         generateExcel(response?.data?.body, columns);
+        toast.success("Excel downloaded successfully");
       } else toast.error("Something went wrong");
-      // setUserData(response?.data?.body);
-      // setTotaItems(response?.data?.meta?.totalRecords);
       setIsLoading(false);
     } catch (error: any) {
       toast.error(error);
@@ -159,9 +152,8 @@ const User = () => {
   };
 
   const handleConfirmDelete = async () => {
-    console.log("deletedData,", deletedData);
     try {
-      const res = await axios.delete(
+      await axios.delete(
         `${API_BASE_URL}/product/delete-by-id/${deletedData.id}`
       );
 
@@ -171,6 +163,19 @@ const User = () => {
       setConfirm(false);
     } catch (error: any) {
       toast.error(error.response.data.message);
+    }
+  };
+
+  const onChangeCategory = (data: any) => {
+    if (data) {
+      setCategory(data);
+      setSearchParams({ category: data });
+    } else {
+      setCategory(data);
+
+      const updatedParams = new URLSearchParams(searchParams.toString());
+      updatedParams.delete("category");
+      setSearchParams(updatedParams);
     }
   };
 
@@ -186,7 +191,7 @@ const User = () => {
           </div>
         </div>
         <div className="row filter-section">
-          <div className="col-md-3 col-sm-6 search-container">
+          <div className="col-md-3 col-sm-6 search-container mb-2">
             <input
               onChange={(e: any) => debouncedSearch(e.target.value)}
               type="text"
@@ -202,7 +207,7 @@ const User = () => {
               )}
             </div>
           </div>
-          <div className="col-md-3 col-sm-6 filter">
+          <div className="col-md-3 col-sm-6 filter mb-2">
             <div className="d-flex align-items-center">
               <p className="mb-0 me-2">Sort by</p>
               <Select
@@ -217,24 +222,22 @@ const User = () => {
               />
             </div>
           </div>
-          <div className="col-md-3 col-sm-6 filter">
+          <div className="col-md-3 col-sm-6 filter mb-2">
             <div className="d-flex align-items-center">
               <Select
                 isRequired
                 valuesKey="value"
                 textKey="name"
                 options={categoryOption}
-                defaultValue={
-                  category
-                }
+                defaultValue={category}
                 registerProperty={{
                   onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                    setCategory(e.target.value),
+                    onChangeCategory(e.target.value),
                 }}
               />
             </div>
           </div>
-          <div className="col d-flex justify-content-end">
+          <div className="col d-flex justify-content-end mb-2">
             <div style={{ width: "200px" }}>
               <Dropdown
                 className="w-100"
@@ -247,6 +250,9 @@ const User = () => {
         </div>
 
         <div className="row pt-5">
+          <p className="mb-2">
+            Total product showing: <b>{totalItems}</b>
+          </p>
           <table className="table  table__ ">
             <thead>
               <tr>
@@ -284,7 +290,7 @@ const User = () => {
               <tbody>
                 {userData?.map((row: any, index: number) => {
                   return (
-                    <tr>
+                    <tr key={index}>
                       <th className="text-center" scope="row">
                         {index + 1}
                       </th>

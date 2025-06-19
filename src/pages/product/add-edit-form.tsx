@@ -1,14 +1,13 @@
 import { useForm } from "react-hook-form";
 import Select from "../../components/select";
 import { categoryOption } from "../../data/user";
-import "./user.scss";
+import "./product.scss";
 
 const AddEditForm = ({ onSubmit, defaultValue, title, type }: any) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm({
     defaultValues: defaultValue,
   });
@@ -19,10 +18,8 @@ const AddEditForm = ({ onSubmit, defaultValue, title, type }: any) => {
       <form className="p-lg-5" onSubmit={handleSubmit(onSubmit)}>
       <div className="row">
         <h3 className="mb-4">{title}</h3>
-
         <div className="col-md-6 mb-3">
           <label className="form-control-label">Name</label>
-
           <input
             placeholder="Enter Product name"
             type="text"
@@ -34,7 +31,6 @@ const AddEditForm = ({ onSubmit, defaultValue, title, type }: any) => {
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-control-label">Price</label>
-
           <input
             placeholder="Enter product price"
             type="number"
@@ -46,8 +42,8 @@ const AddEditForm = ({ onSubmit, defaultValue, title, type }: any) => {
         </div>
         <div className="col-md-12  mb-3">
           <label className="form-control-label">Description</label>
-
           <textarea
+          rows={3}
             placeholder="Enter product description"
             className="form-control"
             {...register("description", {
@@ -91,18 +87,8 @@ const AddEditForm = ({ onSubmit, defaultValue, title, type }: any) => {
                 />
                 <span className="checkmark"></span>
               </label>
-              {/* <label style={{ marginLeft: "1rem" }}>
-                <input
-                  type="radio"
-                  value="no"
-                  {...register("isTaxable", { required: true })}
-                />
-                No
-              </label> */}
+              
             </div>
-            {
-              // !watch('isTaxable') &&<p className="text-danger">Field required</p>
-            }
           </div>
         </div>
         <div className="col-md-4">

@@ -174,16 +174,16 @@ export const sortList = [
     {
       id: 1,
       name: "Electronics",
-      value: 'electronics',
+      value: 'Electronics',
     },
     {
       id: 2,
       name: "Clothing",
-      value: 'clothing',
+      value: 'Clothing',
     },
     {
       name: "Jewellery",
       id: 3,
-      value: 'jewellery',
+      value: 'Jewellery',
     },
   ]
