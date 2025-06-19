@@ -6,9 +6,9 @@ import Dashboard from "./dashboard";
 
 const routes = [
   { path: "/", element: <Dashboard /> },
-  { path: "/employee", element: <User /> },
-  { path: "/employee/:id", element: <EditUser /> },
-  { path: "/employee/add", element: <AddUser /> },
+  { path: "/product", element: <User /> },
+  { path: "/product/:id", element: <EditUser /> },
+  { path: "/product/add", element: <AddUser /> },
   { path: "*", element: <h1>404</h1> }, // 404 Page
 ];
 

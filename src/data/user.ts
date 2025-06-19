@@ -82,29 +82,63 @@ export const roleList = [
   },
 ];
 
-export const defaultData = [
+export const defaultProduct = [
   {
     id: 1,
-    employee_name: "Tiger Nixon",
-    employee_salary: 320800,
-    employee_age: 61,
-    profile_image: "",
+    name: "iPhone 14 Pro",
+    price: 52000,
+    description: "RAM | ROM: 4GB | 512GB, Color: Pink, Battery Health: Below 80%",
+    category: "electronics",
+    isTaxable: "yes",
+    isActive: true,
   },
   {
     id: 2,
-    employee_name: "Garrett Winters",
-    employee_salary: 170750,
-    employee_age: 63,
-    profile_image: "",
+    name: "Samsung Galaxy S22",
+    price: 45000,
+    description: "RAM | ROM: 8GB | 256GB, Color: Phantom Black, AMOLED Display",
+    category: "electronics",
+    isTaxable: "yes",
+    isActive: true,
   },
   {
     id: 3,
-    employee_name: "Ashton Cox",
-    employee_salary: 86000,
-    employee_age: 66,
-    profile_image: "",
+    name: "Diamond Necklace",
+    price: 150000,
+    description: "18K Gold Chain with real diamonds, Weight: 25g",
+    category: "jewellery",
+    isTaxable: "yes",
+    isActive: true,
+  },
+  {
+    id: 4,
+    name: "Gold Plated Earrings",
+    price: 3000,
+    description: "Traditional design, lightweight, anti-allergic finish",
+    category: "jewellery",
+    isTaxable: "no",
+    isActive: true,
+  },
+  {
+    id: 5,
+    name: "Men's Cotton T-Shirt",
+    price: 1200,
+    description: "100% Cotton, Size: M, Color: Navy Blue",
+    category: "clothing",
+    isTaxable: "no",
+    isActive: true,
+  },
+  {
+    id: 6,
+    name: "Women's Denim Jacket",
+    price: 2200,
+    description: "Denim Wash, Size: L, Color: Light Blue",
+    category: "clothing",
+    isTaxable: "yes",
+    isActive: false,
   },
 ];
+
 
 
 export const sortList = [

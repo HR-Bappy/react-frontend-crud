@@ -39,12 +39,12 @@ function Login({}) {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await axios.post(API_BASE_URL + "product/create", {
+      await axios.post(API_BASE_URL + "product/create", {
         ...data,
         id: id,
       });
       toast.success("Product Updated Succesfully");
-      navigate("/employee");
+      navigate("/product");
     } catch (error: any) {
       toast.error(error.response.data.message);
     }
@@ -57,7 +57,7 @@ function Login({}) {
           <AddEditForm
             type="edit"
             onSubmit={onSubmit}
-            title="Edit User"
+            title="Edit Product"
             defaultValue={defalutValue}
           />
         </div>

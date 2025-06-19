@@ -1,0 +1,15 @@
+.confirmation-modal {
+  .modal-header {
+    border-bottom-width: 2px;
+  }
+
+  .modal-body {
+    font-size: 1rem;
+  }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+}

@@ -3,7 +3,7 @@ type valuesKey = "id" | "text" | "object" | any;
 
 interface ISwSelectProps {
   id?: any;
-  defaultValue?: string;
+  defaultValue?: any;
   value?: any;
   placeholder?: string;
   label?: string | JSX.Element;

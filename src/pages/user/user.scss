@@ -33,6 +33,102 @@ th {
   width: 140px;
 }
 
-.Dropdown-control,.search-container input{
- border-radius: 8px !important;
+.Dropdown-control,
+.search-container input {
+  border-radius: 8px !important;
+}
+
+////radio btn
+.radio__btn {
+  display: flex;
+  align-items: center;
+  .sq-radio {
+    margin-right: 5px;
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Hide the browser's default radio button */
+  .sq-radio input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* Create a custom radio button */
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 26px;
+    height: 25px;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+  }
+
+  /* On mouse-over, add a grey background color */
+  .sq-radio:hover input ~ .checkmark {
+    background-color: var(--primary-active-color);
+  }
+
+  /* When the radio button is checked, add a blue background 
+.sq-radio input:checked ~ .checkmark {
+  background-color: #241d25;
+}
+*/
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  /* Show the indicator (dot/circle) when checked */
+  .sq-radio input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  /* Style the indicator (dot/circle) */
+  .sq-radio .checkmark:after {
+    border-radius: 2px;
+    // background-color: #fff;
+    left: 5px;
+    font-family: "FontAwesome";
+    content: "\f00c";
+    color: #fff;
+  }
+}
+
+///FORM CARD
+
+.add-edit-form {
+  display: flex;
+  justify-content: center;
+  .form-card {
+    max-width: 1078px;
+    width: 100%;
+    box-shadow: 0px 0px 17px 4px #00987a6a;
+    // -webkit-box-shadow: 0px 0px 17px 4px rgba(194,54,54,1);
+    // -moz-box-shadow: 0px 0px 17px 4px rgba(194,54,54,1);
+  }
+}
+input,
+textarea,
+select {
+  border: 1px solid #359457 !important; // Your desired color
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none; // Removes default browser outline
+  border: 1px solid #359457 !important; // Your desired color
+  box-shadow: 0 0 0 3px rgba(53, 148, 87, 0.2) !important; // Optional glow effect
 }

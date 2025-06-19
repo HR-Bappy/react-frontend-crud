@@ -14,9 +14,9 @@ function SideBar() {
     }, {
       id: 1,
       icon: <FaRegUser className="site_bar_icon" />,
-      link: '/employee',
-      title: "Employee",
-      class: `nav-link  ${location?.pathname == '/employee' ? 'active' : ''}`
+      link: '/product',
+      title: "Product",
+      class: `nav-link  ${location?.pathname == '/product' ? 'active' : ''}`
     }
   ]
   return (

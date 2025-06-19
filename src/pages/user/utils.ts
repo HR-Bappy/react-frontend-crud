@@ -15,11 +15,17 @@ export const fetchBase64Image = async (imageUrl: string): Promise<string> => {
 export const generatePdfContent = async (data: any[]) => {
   const docDefinition: TDocumentDefinitions = {
     content: [
-      { text: "Employee List Report", style: "header", alignment: "center" },
+      { text: "Product List Report", style: "header", alignment: "center" },
+      // filter?.label &&
+      //   filter?.value && {
+      //     text: `${filter.label}: ${filter.value}`,
+      //     style: "subHeader",
+      //     alignment: "center",
+      //   },
       {
         columns: [
           {
-            text: "Total Employee: " + data.length,
+            text: "Total Items: " + data.length,
             alignment: "left",
             fontSize: 10,
           },
@@ -29,15 +35,15 @@ export const generatePdfContent = async (data: any[]) => {
       {
         table: {
           headerRows: 1,
-          widths: [20, 120, 70, 100, 40, "*"],
+          widths: [20, 120, "*", 50, 40, 45],
           body: [
             [
               { text: "#", style: "tableHeader" },
-              { text: "Name & Profile", style: "tableHeader" },
-              { text: "Phone", style: "tableHeader" },
-              { text: "Email", style: "tableHeader" },
-              { text: "Gender", style: "tableHeader" },
-              { text: "Address", style: "tableHeader" },
+              { text: "Name", style: "tableHeader" },
+              { text: "Description", style: "tableHeader" },
+              { text: "Category", style: "tableHeader" },
+              { text: "Price", style: "tableHeader" },
+              { text: "Taxable", style: "tableHeader" },
             ],
             ...(await Promise.all(
               data.map(async (user: any, i: number) => {
@@ -46,25 +52,26 @@ export const generatePdfContent = async (data: any[]) => {
                 );
                 return [
                   i + 1,
-                  {
-                    columns: [
-                      {
-                        image: imageBase64,
-                        width: 30,
-                        height: 30,
-                        margin: [0, 0, 5, 0],
-                      },
-                      {
-                        text: `${user.firstname} ${user.lastname} \n${user?.birthday}`,
-                        fontSize: 10,
-                        margin: [5, 0, 0, 0],
-                      },
-                    ],
-                  },
-                  user.phone,
-                  user.email,
-                  user.gender,
-                  `${user.address.street}, ${user.address.city}, ${user.address.country}`,
+                  // {
+                  //   columns: [
+                  //     {
+                  //       image: imageBase64,
+                  //       width: 30,
+                  //       height: 30,
+                  //       margin: [0, 0, 5, 0],
+                  //     },
+                  //     {
+                  //       text: `${user.firstname} ${user.lastname} \n${user?.birthday}`,
+                  //       fontSize: 10,
+                  //       margin: [5, 0, 0, 0],
+                  //     },
+                  //   ],
+                  // },
+                  user.name,
+                  user.description,
+                  user.category,
+                  user.price,
+                  user.isTaxable,
                 ];
               })
             )),
@@ -101,7 +108,7 @@ export const generateExcel = async (data: any[], columns: any[]) => {
 
   // Add Title Rows
   const titleRows = [
-    worksheet.addRow(["Employee List Report"]),
+    worksheet.addRow(["Product List Report"]),
     worksheet.addRow([]),
   ];
 
@@ -115,7 +122,7 @@ export const generateExcel = async (data: any[], columns: any[]) => {
   // Merge Title Cells and Apply Style
   titleRows.forEach((row, index) => {
     worksheet.mergeCells(
-      `A${index + 1}:${String.fromCharCode(65 + columns.length)}${index+1}`
+      `A${index + 1}:${String.fromCharCode(65 + columns.length)}${index + 1}`
     );
     row.getCell(1).font = {
       size: index === 0 ? 16 : 12,
@@ -129,6 +136,7 @@ export const generateExcel = async (data: any[], columns: any[]) => {
     };
     row.height = index === 0 ? 30 : 20;
   });
+  
 
   worksheet.getCell(`${getColumnLetter(columns.length)}3`).value =
     "Date : " + Today;
@@ -166,42 +174,44 @@ export const generateExcel = async (data: any[], columns: any[]) => {
     const rowData = data[i];
     const rowValues = [
       i + 1,
-      "",
-      `${rowData.firstname} ${rowData.lastname}\n${rowData.birthday}`,
-      rowData.gender,
-      rowData.phone,
-      rowData.email,
-      rowData.website,
-      `${rowData.address?.street}, ${rowData.address?.city}, ${rowData.address?.country}`,
+      // "",
+      rowData.name,
+      rowData.description,
+      rowData.category,
+      rowData.price,
+      rowData.isTaxable,
     ];
     const row = worksheet.addRow(rowValues);
     row.height = 60;
 
     // Add Image
-    const base64Image = await fetchBase64Image(
-      `https://reqres.in/img/faces/${getRandomMod13()}-image.jpg`
-    );
-    const imageId = workbook.addImage({
-      base64: base64Image,
-      extension: "jpeg",
-    });
+    // const base64Image = await fetchBase64Image(
+    //   `https://reqres.in/img/faces/${getRandomMod13()}-image.jpg`
+    // );
+    // const imageId = workbook.addImage({
+    //   base64: base64Image,
+    //   extension: "jpeg",
+    // });
 
-    worksheet.addImage(imageId, {
-      tl: { col: 1.5, row: row.number - 0.8 },
-      ext: { width: 50, height: 50 },
-    });
+    // worksheet.addImage(imageId, {
+    //   tl: { col: 1.5, row: row.number - 0.8 },
+    //   ext: { width: 50, height: 50 },
+    // });
 
     // Align text in cells
     row.eachCell((cell, colNumber) => {
       if (colNumber > 1) {
-        cell.alignment = { vertical: "middle", wrapText: true };
+        cell.alignment = { vertical: "middle", horizontal: "left", wrapText: true };
       }
+      else
+        cell.alignment = { vertical: "middle", horizontal: "center", wrapText: true };
+
     });
   }
 
   // Adjust Column Widths
   worksheet.columns.forEach((col, index) => {
-    col.width = [10, 15, 20, 15, 20, 30, 25, 35][index] || 15;
+    col.width = [10, 30, 50, 25, 20, 25,][index] || 15;
   });
 
   // Generate Excel File
@@ -211,7 +221,7 @@ export const generateExcel = async (data: any[], columns: any[]) => {
   });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = "employee-list.xlsx";
+  link.download = "product-list.xlsx";
   link.click();
   URL.revokeObjectURL(link.href);
 };
@@ -221,52 +231,46 @@ export const columns = [
     id: 1,
     text: "#",
     width: 50,
-    align: "text-left",
-    style: "tableHeader",
-  },
-  {
-    id: 2,
-    text: "Profile",
-    width: 50,
-    align: "text-left",
+    // align: "text-center",
     style: "tableHeader",
   },
   {
     id: 2,
     text: "Name",
     width: 50,
-    align: "text-left",
+    // align: "text-center",
     style: "tableHeader",
   },
   {
     id: 3,
-    text: "Gender",
+    text: "Description",
     width: 50,
+    // align: "text-center",
     style: "tableHeader",
   },
   {
     id: 4,
-    text: "Phone",
+    text: "Category",
     width: 50,
     style: "tableHeader",
+    // align: "text-center",
+
   },
   {
     id: 5,
-    text: "Email",
+    text: "Price",
     width: 50,
     style: "tableHeader",
+    // align: "text-center",
+
   },
   {
     id: 6,
-    text: "Website Link",
-    width: 100,
-    style: "tableHeader",
-  },
-  {
-    id: 7,
-    text: "Address",
+    text: "Taxable",
     width: 50,
     style: "tableHeader",
+    // align: "text-center",
+
   },
 ];
 const getColumnLetter = (columnIndex: number): string => {
@@ -279,6 +283,6 @@ const getColumnLetter = (columnIndex: number): string => {
   }
   return columnLetter;
 };
- export const getRandomMod13 = (): number => {
+export const getRandomMod13 = (): number => {
   return Math.floor(Math.random() * 12) + 1;
 };
