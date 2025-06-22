@@ -10,7 +10,7 @@ function Login() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: {  },
   } = useForm();
 
   const onSubmit = async (data: any) => {
